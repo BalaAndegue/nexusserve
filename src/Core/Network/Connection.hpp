@@ -1,6 +1,7 @@
 #pragma once
 #include "../../API/IProtocolParser.hpp"
 #include "../../API/IRequestHandler.hpp"
+
 #include <memory>
 #include <string>
 
@@ -10,9 +11,8 @@ namespace Core::Network {
 // handleSync() blocks until the request is complete — designed to be called
 // from a thread-pool worker so the event loop stays free for accept().
 class Connection {
-public:
-    Connection(int fd,
-               std::shared_ptr<API::IProtocolParser> parser,
+  public:
+    Connection(int fd, std::shared_ptr<API::IProtocolParser> parser,
                std::shared_ptr<API::IRequestHandler> handler);
     ~Connection();
 
@@ -23,10 +23,10 @@ public:
     // The file descriptor is closed in the destructor.
     void handleSync();
 
-private:
+  private:
     void sendResponse(const API::HttpResponse& resp);
 
-    int  fd_;
+    int fd_;
     std::shared_ptr<API::IProtocolParser> parser_;
     std::shared_ptr<API::IRequestHandler> handler_;
 };

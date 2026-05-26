@@ -1,8 +1,9 @@
 #include "Socket.hpp"
-#include <stdexcept>
+
 #include <cstring>
 #include <fcntl.h>
 #include <netinet/in.h>
+#include <stdexcept>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -29,10 +30,12 @@ Socket::Socket(uint16_t port) {
 }
 
 Socket::~Socket() {
-    if (fd_ >= 0) ::close(fd_);
+    if (fd_ >= 0)
+        ::close(fd_);
 }
 
-Socket::Socket(Socket&& other) noexcept : fd_(other.fd_) {
+Socket::Socket(Socket&& other) noexcept
+    : fd_(other.fd_) {
     other.fd_ = -1;
 }
 

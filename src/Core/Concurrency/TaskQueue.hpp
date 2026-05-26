@@ -1,15 +1,15 @@
 #pragma once
-#include <functional>
-#include <queue>
-#include <mutex>
 #include <condition_variable>
+#include <functional>
+#include <mutex>
 #include <optional>
+#include <queue>
 
 namespace Core::Concurrency {
 
 // Lock-based MPMC queue. Workers block on pop(); producers call push().
 class TaskQueue {
-public:
+  public:
     using Task = std::function<void()>;
 
     void push(Task t) {
@@ -24,14 +24,18 @@ public:
     std::optional<Task> pop() {
         std::unique_lock lk(mu_);
         cv_.wait(lk, [this] { return !queue_.empty() || done_; });
-        if (queue_.empty()) return std::nullopt;
+        if (queue_.empty())
+            return std::nullopt;
         Task t = std::move(queue_.front());
         queue_.pop();
         return t;
     }
 
     void shutdown() {
-        { std::lock_guard lk(mu_); done_ = true; }
+        {
+            std::lock_guard lk(mu_);
+            done_ = true;
+        }
         cv_.notify_all();
     }
 
@@ -40,11 +44,11 @@ public:
         return queue_.size();
     }
 
-private:
-    std::queue<Task>        queue_;
-    mutable std::mutex      mu_;
+  private:
+    std::queue<Task> queue_;
+    mutable std::mutex mu_;
     std::condition_variable cv_;
-    bool                    done_{false};
+    bool done_{false};
 };
 
 } // namespace Core::Concurrency

@@ -1,30 +1,36 @@
 #include "Connection.hpp"
+
 #include <array>
 #include <cstring>
-#include <unistd.h>
-#include <sys/socket.h>
 #include <sstream>
+#include <sys/socket.h>
+#include <unistd.h>
 
 namespace Core::Network {
 
-Connection::Connection(int fd,
-                       std::shared_ptr<API::IProtocolParser> parser,
+Connection::Connection(int fd, std::shared_ptr<API::IProtocolParser> parser,
                        std::shared_ptr<API::IRequestHandler> handler)
-    : fd_(fd), parser_(std::move(parser)), handler_(std::move(handler)) {
+    : fd_(fd)
+    , parser_(std::move(parser))
+    , handler_(std::move(handler)) {
     // Apply a 5-second receive timeout so slow clients don't hold workers.
-    struct timeval tv{.tv_sec = 5, .tv_usec = 0};
+    struct timeval tv {
+        .tv_sec = 5, .tv_usec = 0
+    };
     ::setsockopt(fd_, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 }
 
 Connection::~Connection() {
-    if (fd_ >= 0) ::close(fd_);
+    if (fd_ >= 0)
+        ::close(fd_);
 }
 
 void Connection::handleSync() {
     std::array<char, 4096> buf{};
     while (true) {
         ssize_t n = ::recv(fd_, buf.data(), buf.size(), 0);
-        if (n <= 0) return; // client closed or timeout
+        if (n <= 0)
+            return; // client closed or timeout
 
         auto result = parser_->feed(buf.data(), static_cast<std::size_t>(n));
         if (result) {

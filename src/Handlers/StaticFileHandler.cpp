@@ -1,15 +1,18 @@
 #include "StaticFileHandler.hpp"
+
 #include "../Protocols/Http/HttpConstants.hpp"
+
+#include <filesystem>
 #include <fstream>
 #include <sstream>
-#include <filesystem>
 
 namespace fs = std::filesystem;
 using namespace Protocols::Http;
 
 namespace Handlers {
 
-StaticFileHandler::StaticFileHandler(std::string root) : root_(std::move(root)) {}
+StaticFileHandler::StaticFileHandler(std::string root)
+    : root_(std::move(root)) {}
 
 API::HttpResponse StaticFileHandler::handle(const API::ParsedRequest& req) {
     if (req.method != "GET" && req.method != "HEAD") {
@@ -17,7 +20,8 @@ API::HttpResponse StaticFileHandler::handle(const API::ParsedRequest& req) {
     }
 
     std::string uri = req.uri;
-    if (uri == "/") uri = "/index.html";
+    if (uri == "/")
+        uri = "/index.html";
 
     // Prevent path traversal
     fs::path target = fs::weakly_canonical(fs::path(root_) / uri.substr(1));
@@ -37,20 +41,25 @@ API::HttpResponse StaticFileHandler::serveFile(const std::string& path) {
     ss << file.rdbuf();
     std::string body = ss.str();
 
-    return {STATUS_OK, "OK",
-            {{"Content-Type", mimeType(path)}},
-            std::move(body)};
+    return {STATUS_OK, "OK", {{"Content-Type", mimeType(path)}}, std::move(body)};
 }
 
 std::string StaticFileHandler::mimeType(const std::string& path) {
     auto ext = fs::path(path).extension().string();
-    if (ext == ".html" || ext == ".htm") return "text/html; charset=utf-8";
-    if (ext == ".css")                   return "text/css";
-    if (ext == ".js")                    return "application/javascript";
-    if (ext == ".json")                  return "application/json";
-    if (ext == ".png")                   return "image/png";
-    if (ext == ".jpg" || ext == ".jpeg") return "image/jpeg";
-    if (ext == ".svg")                   return "image/svg+xml";
+    if (ext == ".html" || ext == ".htm")
+        return "text/html; charset=utf-8";
+    if (ext == ".css")
+        return "text/css";
+    if (ext == ".js")
+        return "application/javascript";
+    if (ext == ".json")
+        return "application/json";
+    if (ext == ".png")
+        return "image/png";
+    if (ext == ".jpg" || ext == ".jpeg")
+        return "image/jpeg";
+    if (ext == ".svg")
+        return "image/svg+xml";
     return "application/octet-stream";
 }
 

@@ -13,17 +13,20 @@ void Logger::emit(LogLevel lvl, const std::string& msg) {
 
     std::lock_guard lk(mu_);
     auto& out = (lvl >= LogLevel::WARN) ? std::cerr : std::cout;
-    out << std::put_time(std::localtime(&time), "%Y-%m-%d %H:%M:%S")
-        << " [" << levelStr(lvl) << "] "
-        << msg << '\n';
+    out << std::put_time(std::localtime(&time), "%Y-%m-%d %H:%M:%S") << " [" << levelStr(lvl)
+        << "] " << msg << '\n';
 }
 
 const char* Logger::levelStr(LogLevel lvl) {
     switch (lvl) {
-        case LogLevel::DEBUG: return "DEBUG";
-        case LogLevel::INFO:  return "INFO ";
-        case LogLevel::WARN:  return "WARN ";
-        case LogLevel::ERROR: return "ERROR";
+        case LogLevel::DEBUG:
+            return "DEBUG";
+        case LogLevel::INFO:
+            return "INFO ";
+        case LogLevel::WARN:
+            return "WARN ";
+        case LogLevel::ERROR:
+            return "ERROR";
     }
     return "?????";
 }

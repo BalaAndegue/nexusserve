@@ -1,5 +1,7 @@
 #include "HttpParser.hpp"
+
 #include "HttpConstants.hpp"
+
 #include <sstream>
 
 namespace Protocols::Http {
@@ -45,11 +47,13 @@ bool HttpParser::parseRequestLine(const std::string& line, API::ParsedRequest& r
 
 bool HttpParser::parseHeader(const std::string& line, API::ParsedRequest& req) {
     auto colon = line.find(':');
-    if (colon == std::string::npos) return false;
+    if (colon == std::string::npos)
+        return false;
 
     std::string key   = line.substr(0, colon);
     std::string value = line.substr(colon + 2); // skip ": "
-    if (!value.empty() && value.back() == '\r') value.pop_back();
+    if (!value.empty() && value.back() == '\r')
+        value.pop_back();
     req.headers[key] = value;
     return true;
 }

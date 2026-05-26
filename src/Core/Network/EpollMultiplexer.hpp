@@ -1,13 +1,13 @@
 #pragma once
 #include <functional>
-#include <vector>
 #include <sys/epoll.h>
+#include <vector>
 
 namespace Core::Network {
 
 // Reactor: multiplexes I/O events via epoll_wait and dispatches callbacks.
 class EpollMultiplexer {
-public:
+  public:
     using EventCallback = std::function<void(int fd, uint32_t events)>;
 
     explicit EpollMultiplexer(int max_events = 1024);
@@ -25,12 +25,12 @@ public:
 
     void stop() { running_ = false; }
 
-private:
+  private:
     int epoll_fd_{-1};
     int max_events_;
     bool running_{true};
 
-    std::vector<epoll_event>            event_buf_;
+    std::vector<epoll_event> event_buf_;
     std::unordered_map<int, EventCallback> callbacks_;
 };
 

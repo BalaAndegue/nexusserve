@@ -12,7 +12,8 @@ ThreadPool::~ThreadPool() {
     running_ = false;
     queue_.shutdown();
     for (auto& w : workers_)
-        if (w.joinable()) w.join();
+        if (w.joinable())
+            w.join();
 }
 
 void ThreadPool::submit(TaskQueue::Task task) {
@@ -22,7 +23,8 @@ void ThreadPool::submit(TaskQueue::Task task) {
 void ThreadPool::workerLoop() {
     while (running_) {
         auto task = queue_.pop();
-        if (!task) break;
+        if (!task)
+            break;
         (*task)();
     }
 }

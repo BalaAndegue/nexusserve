@@ -1,7 +1,8 @@
-#include <gtest/gtest.h>
 #include "Core/Concurrency/ThreadPool.hpp"
+
 #include <atomic>
 #include <chrono>
+#include <gtest/gtest.h>
 
 using Core::Concurrency::ThreadPool;
 
