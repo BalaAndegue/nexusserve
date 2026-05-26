@@ -32,8 +32,7 @@ AlignConsecutiveAssignments:
   AcrossComments:   false
 AlignConsecutiveDeclarations:
   Enabled: false
-AlignTrailingComments:
-  Kind: Always
+AlignTrailingComments: true
 
 # Includes
 SortIncludes:          CaseSensitive
