@@ -1,0 +1,6 @@
+{
+    "port": 8080,
+    "public_root": "./public",
+    "thread_pool_size": 0,
+    "log_level": "INFO"
+}
